@@ -1,0 +1,7 @@
+.devcontainer
+.env
+
+/dags/test.py
+/dags/__pycache__/
+/logs/
+
