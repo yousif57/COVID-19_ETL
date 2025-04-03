@@ -75,14 +75,3 @@ The transformed data powers analytical dashboards in PowerBI:
      Database: postgres
      ```
    - Authenticate and load the data
-
-## Project Structure
-```
-├── airflow/            # Airflow DAGs and configuration
-├── data/               # Data storage directory
-├── scripts/            # ETL Python scripts
-├── sql/                # SQL scripts for table creation and queries
-├── docker-compose.yml  # Infrastructure setup
-└── README.md           # Project documentation
-```
-
