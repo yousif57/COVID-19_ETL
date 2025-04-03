@@ -13,10 +13,9 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
 
   volumes:
-    - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
-    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
-    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ./dags:/opt/airflow/dags
+    - ./logs:/opt/airflow/logs
+    - ./data:/opt/airflow/data
     
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
@@ -26,7 +25,7 @@ x-airflow-common:
 
 services:
   postgres-airflow:
-    image: postgres:13
+    image: postgres:17-alpine
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
@@ -34,7 +33,7 @@ services:
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5442:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -80,8 +79,8 @@ services:
     command:
       - -c
       - |
-        mkdir -p /sources/logs /sources/dags /sources/plugins
-        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
+        mkdir -p /sources/logs /sources/dags /sources/data
+        chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,data}
         exec /entrypoint airflow version
       # yamllint disable rule:line-length
 
@@ -96,6 +95,17 @@ services:
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
 
+
+  # jupyter:
+  #     image: bitnami/jupyter-base-notebook:latest
+  #     container_name: jupyter
+  #     ports:
+  #       - "8085:8888"
+
+  #     networks:
+  #       - my_network
+  #     volumes:
+  #       - ./data:/opt/data
 
 volumes:
   postgres-db-volume:
